@@ -6,33 +6,39 @@ on:
       - release
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+      - name: Analysing the code with flake8
+        run: |
+          pip install flake8
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Install dependancies
         run: |
           python -m pip install --upgrade pip
           pip install -r vote/requirements.txt
-          pip install flake8
-
-      - name: Analysing the code with flake8
-        run: |
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
       - name: Create Bundle Code
         run: |
           zip -r bundle.zip .
 
+  publish:
+    runs-on: ubuntu-latest
+    steps:
       - name: Upload Bundle
         uses: actions/upload-artifact@v4
         with:
