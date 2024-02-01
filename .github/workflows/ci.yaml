@@ -51,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: code-bundle.tar.gz
-          path: code-bundle.tar.gz
+          path: bundle.zip
 
       - name: Create Release
         uses: actions/create-release@v1
