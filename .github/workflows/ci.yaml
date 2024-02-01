@@ -48,10 +48,10 @@ jobs:
     needs: [lint, build]
     steps:
       - name: Download Bundle
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release download -R octo-org/codeql-bundle --pattern 'code-bundle.tar.gz'
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-bundle.tar.gz
+          path: code-bundle.tar.gz
 
       - name: Create Release
         uses: actions/create-release@v1
