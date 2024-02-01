@@ -47,16 +47,27 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, build]
     steps:
-      - name: Download Bundle
-        uses: actions/upload-artifact@v3
+      - name: Download Bundle Artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: code-python-bundle.tar.gz
-          path: bundle.zip
+          name: python-bundle
+          path: temp-artifact
 
       - name: Create Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: v1.0.0
           release_name: Release v1
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./temp-artifact/bundle.zip
+          asset_name: code.zip
+          asset_content_type: application/zip
