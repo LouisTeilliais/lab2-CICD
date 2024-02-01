@@ -59,8 +59,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v1.0.0
-          release_name: Release v1
+          tag_name: ${{github.run_number}}
+          release_name: Release v${{github.run_number}}
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -69,5 +69,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./temp-artifact/bundle.zip
-          asset_name: bundle.zip
+          asset_name: vote-app-v${{github.run_number}}
           asset_content_type: application/zip
