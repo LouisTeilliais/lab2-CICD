@@ -37,15 +37,21 @@ jobs:
         run: |
           zip -r bundle.zip .
 
-  publish:
-    runs-on: ubuntu-latest
-    needs: [lint, build]
-    steps:
       - name: Upload Bundle
         uses: actions/upload-artifact@v4
         with:
           name: python-bundle
           path: bundle.zip
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [lint, build]
+    steps:
+      - name: Download Bundle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download -R octo-org/codeql-bundle --pattern 'code-bundle.tar.gz'
 
       - name: Create Release
         uses: actions/create-release@v1
